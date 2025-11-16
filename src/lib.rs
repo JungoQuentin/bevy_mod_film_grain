@@ -2,6 +2,7 @@
 use bevy::{
     asset::{load_internal_asset, uuid_handle},
     core_pipeline::{
+        core_2d::graph::{Core2d, Node2d},
         core_3d::graph::{Core3d, Node3d},
         FullscreenShader,
     },
@@ -29,7 +30,16 @@ const FILM_GRAIN_SHADER_HANDLE: Handle<Shader> =
     uuid_handle!("1347c9b7-c46a-48e7-b7b8-023a354b7cac");
 
 /// Bevy Plugin to add the film grain shader to your project
-pub struct FilmGrainPlugin;
+#[derive(Default)]
+pub struct FilmGrainPlugin {
+    is_2d: bool,
+}
+
+impl FilmGrainPlugin {
+    pub fn with_2d() -> Self {
+        Self { is_2d: true }
+    }
+}
 
 impl Plugin for FilmGrainPlugin {
     fn build(&self, app: &mut App) {
@@ -49,16 +59,29 @@ impl Plugin for FilmGrainPlugin {
             return;
         };
 
-        render_app
-            .add_render_graph_node::<ViewNodeRunner<FilmGrainNode>>(Core3d, FilmGrainLabel)
-            .add_render_graph_edges(
-                Core3d,
-                (
-                    Node3d::Tonemapping,
-                    FilmGrainLabel,
-                    Node3d::EndMainPassPostProcessing,
-                ),
-            );
+        if self.is_2d {
+            render_app
+                .add_render_graph_node::<ViewNodeRunner<FilmGrainNode>>(Core2d, FilmGrainLabel)
+                .add_render_graph_edges(
+                    Core2d,
+                    (
+                        Node2d::Tonemapping,
+                        FilmGrainLabel,
+                        Node2d::EndMainPassPostProcessing,
+                    ),
+                );
+        } else {
+            render_app
+                .add_render_graph_node::<ViewNodeRunner<FilmGrainNode>>(Core3d, FilmGrainLabel)
+                .add_render_graph_edges(
+                    Core3d,
+                    (
+                        Node3d::Tonemapping,
+                        FilmGrainLabel,
+                        Node3d::EndMainPassPostProcessing,
+                    ),
+                );
+        }
     }
 
     fn finish(&self, app: &mut App) {

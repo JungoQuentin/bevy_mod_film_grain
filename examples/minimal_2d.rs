@@ -4,7 +4,7 @@ use bevy::prelude::*;
 use bevy_mod_film_grain::{FilmGrainPlugin, FilmGrainSettings};
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, FilmGrainPlugin::default()))
+        .add_plugins((DefaultPlugins, FilmGrainPlugin::with_2d()))
         .add_systems(Startup, setup)
         .run();
 }
@@ -12,7 +12,7 @@ fn main() {
 /// Set up a simple 3D scene
 fn setup(mut commands: Commands) {
     commands.spawn((
-        Camera3d::default(),
+        Camera2d::default(),
         // Add the setting to the camera.
         // This component is also used to determine on which camera to run the post processing effect.
         FilmGrainSettings::from_strength(0.2),

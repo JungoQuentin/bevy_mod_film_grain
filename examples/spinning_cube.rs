@@ -3,7 +3,7 @@ use bevy::{color::palettes::tailwind::TEAL_900, prelude::*};
 use bevy_mod_film_grain::{FilmGrainPlugin, FilmGrainSettings};
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, FilmGrainPlugin))
+        .add_plugins((DefaultPlugins, FilmGrainPlugin::default()))
         .add_systems(Startup, setup)
         .add_systems(Update, (rotate, update_settings))
         .run();
