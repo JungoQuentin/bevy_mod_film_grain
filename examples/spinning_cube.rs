@@ -14,7 +14,7 @@ use bevy_mod_film_grain::{FilmGrainPlugin, FilmGrainSettings};
 
 fn main() {
     App::new()
-        .add_plugins((DefaultPlugins, FilmGrainPlugin, FeathersPlugins))
+        .add_plugins((DefaultPlugins, FilmGrainPlugin::default(), FeathersPlugins))
         .insert_resource(UiTheme(create_dark_theme()))
         .add_systems(Startup, (setup, setup_ui))
         .add_systems(Update, rotate)
