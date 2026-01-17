@@ -131,7 +131,7 @@ impl ViewNode for FilmGrainNode {
 
         let bind_group = render_context.render_device().create_bind_group(
             "film_grain_bind_group",
-            &film_grain_pipeline.layout,
+            &pipeline_cache.get_bind_group_layout(&film_grain_pipeline.layout),
             &BindGroupEntries::sequential((
                 post_process.source,
                 &film_grain_pipeline.sampler,
@@ -162,7 +162,7 @@ impl ViewNode for FilmGrainNode {
 
 #[derive(Resource)]
 struct FilmGrainPipeline {
-    layout: BindGroupLayout,
+    layout: BindGroupLayoutDescriptor,
     sampler: Sampler,
     pipeline_id: CachedRenderPipelineId,
 }
@@ -172,7 +172,7 @@ impl FromWorld for FilmGrainPipeline {
         let render_device = world.resource::<RenderDevice>();
 
         // We need to define the bind group layout used for our pipeline
-        let layout = render_device.create_bind_group_layout(
+        let layout = BindGroupLayoutDescriptor::new(
             "film_grain_bind_group_layout",
             &BindGroupLayoutEntries::sequential(
                 // The layout entries will only be visible in the fragment stage
